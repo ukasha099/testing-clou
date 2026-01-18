@@ -115,6 +115,18 @@ const startServer = async () => {
 
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
+    }).on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} is already in use!`);
+        console.error(`   Another server is running on port ${PORT}.`);
+        console.error(`\n💡 Solutions:`);
+        console.error(`   1. Stop the other server (Ctrl+C in that terminal)`);
+        console.error(`   2. Or change PORT in .env file to a different port`);
+        console.error(`   3. Or kill the process using: Get-Process -Id <PID> | Stop-Process`);
+        process.exit(1);
+      } else {
+        throw err;
+      }
     });
   } catch (error) {
     console.error('Unable to start server:', error);
